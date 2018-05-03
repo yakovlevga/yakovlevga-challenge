@@ -1,0 +1,58 @@
+$color-accent: #fa2b57;
+$color-header: #000;
+
+$li-border-color: #c8c8ca;
+$li-disclosure-color: #eae9ee;
+$li-font-size: 1.4rem;
+$li-padding: 1rem 0;
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    user-select: none;
+    -webkit-touch-callout: none; 
+}
+
+a {
+    color: $color-accent;
+    text-decoration: none;    
+}
+  
+
+ul.list {
+    padding: 0;
+    margin: 1rem 0 0 0;
+    list-style: none;
+
+    li {
+        font-size: $li-font-size;
+        border-bottom: 1px solid $li-border-color;
+
+        &:first-child {
+            border-top: 1px solid $li-border-color;
+        }
+
+        a {
+            display: flex;
+            align-content: flex-start;
+            align-items: center;
+            width: 100%;
+            padding: $li-padding;            
+        
+
+            &:before {
+                position: absolute;
+                right: 1rem;                
+
+                content: ' ';
+                fill: $li-disclosure-color;
+                background-image: url('~/assets/arrow.svg');
+                background-size: 1rem 1rem;
+                height: 1rem;
+                width: 1rem;
+                background-repeat: no-repeat;
+            }
+        }
+    }    
+}

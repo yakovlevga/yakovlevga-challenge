@@ -1,0 +1,155 @@
+@import './../App/App.scss';
+
+$transitionSpeed: 300;
+
+$nav-height: 3rem;
+$nav-font-size: 1rem;
+
+$padding-horizontal: 2rem;
+$header-font-size: 2rem;
+
+@mixin transition($time: $transitionSpeed, $delay:0) {
+    transition: all #{$time}ms linear #{$delay}ms;
+}
+
+.scene {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+
+    nav {
+        display: flex;
+        align-items: center;
+
+        height: $nav-height;
+        padding-left: $padding-horizontal;
+
+        a {
+            display: inline-block;
+            overflow: hidden; // Нужно, чтобы красиво прятать заголовок, уезжающий налево
+            font-weight: 700;
+
+            &:before {
+                content: ' ';
+                background-image: url('~/assets/back.svg');
+                background-size: $nav-font-size $nav-font-size;
+                height: $nav-font-size;
+                width: $nav-font-size;
+
+                position: absolute;                
+                display: inline-block;
+                left: $padding-horizontal / 2;
+
+                transform: scale(-1)
+            }
+        }
+    }
+
+    &-body {
+        height: 100%;
+        background-color: #ffffff;        
+        padding-left: $padding-horizontal;
+    }
+
+    h1 {
+        padding: 0;
+        margin: 0;
+        height: $header-font-size;
+    }
+
+    // Анимация    
+    // При навигации вперед
+    // Для нового экрана, выезжающего справа налево
+    &.forward-enter {
+
+        transform: translateX(100%);
+        z-index: 1; // новую карточку на первый план
+
+        nav {
+            opacity: 0;
+        }        
+
+        &.forward-enter-active {
+            @include transition();
+            transform: none;
+        }
+    }    
+    // Для старого экрана, уезжающего справа налево
+    &.forward-exit {          
+        .scene-body {
+            .scene-body-content { 
+                transform: translateX(0);
+            }
+        }
+
+        &-active {
+            
+            nav {
+                a {
+                    div {
+                        @include transition($transitionSpeed * .5); // предыдущая кнопка Назад уезжает налево. Так в iOs.
+                        transform: translateX(-100%);
+                    }
+                }
+            }
+            
+            .scene-body {
+                // по ТЗ мы должны трансформировать заголовок текущего экрана в ссылку в хэдере
+                h1 {
+                    @include transition($transitionSpeed);
+
+                    color: $color-accent;
+                    font-size: $nav-font-size; // уменьшаем до размера ссылки                        
+                    transform: translateY(- ($nav-height - $nav-font-size)); // Тянем текущий заголовок к кнопке Назад
+                }
+                .scene-body-content {
+                    @include transition($transitionSpeed * 2);
+                    transform: translateX(-100%);
+                    opacity: 0;
+                }
+            }
+        }
+    }
+
+    // При навигации назад
+    // Для нового экрана, выезжающего слева направо
+    &.backward-enter {
+        z-index: -1;
+        .scene-body {
+            h1 {
+                opacity: 0;
+            }
+        }
+    }    
+    // Для старого экрана, уезжающего справа налево
+    &.backward-exit {
+        nav {
+            a {
+                overflow: visible;
+                display: flex;
+                align-items: center;            
+            }
+        }
+        &-active {            
+            nav {
+                a {                    
+                    div { 
+                        @include transition($transitionSpeed / 2); // предыдущая кнопка Назад выкатывается вместо заголовка страницы
+                        transform: translateY(42px); // Тянем текущую кнопку на место заголовока
+                        color: $color-header; // мутируем в цвет заголовка
+                        font-size: $header-font-size; // увеличиваем до размера заголовка
+                    }                    
+                }
+            }
+
+            .scene-body {
+                @include transition();
+                transform: translateX(100%);     
+            }
+        }
+    }
+
+}
